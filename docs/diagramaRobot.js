@@ -148,7 +148,35 @@
 
 	};
 
+	DiagramaRobot.prototype.calcularDelay = function(thetas){
+		var len = thetas.length;
+
+		var cuarto = parseInt(len/4,10);
+		var medio = parseInt(len/2,10);
+		var tercuarto = parseInt(3*len/4,10);
+
+		var tolerance = 1e-3;
+
+		var xCuarto = this.scara.problemaDirecto(thetas[cuarto][0],thetas[cuarto][1])[0][3];
+		var xMedio = this.scara.problemaDirecto(thetas[medio][0],thetas[medio][1])[0][3];
+		var xTercuarto = this.scara.problemaDirecto(thetas[tercuarto][0],thetas[tercuarto][1])[0][3];
+
+		var delay = 0;
+		for(var i = 0; i < (cuarto-1); i++){
+			var distCuarto = math.abs(this.resultados.trayectorias.posicion.real[cuarto-i].x -xCuarto);
+			var distMedio = math.abs(this.resultados.trayectorias.posicion.real[medio-i].x - xMedio);
+			var distTercuarto = math.abs(this.resultados.trayectorias.posicion.real[tercuarto-i].x - xTercuarto);
+			if( distCuarto < tolerance && distMedio < tolerance && distTercuarto < tolerance){
+				delay = i;
+				break;
+			}
+		}
+
+		return delay;
+	};
+
 	DiagramaRobot.prototype.ordernarThetas = function(thetas, control, motor, carga){
+		var delay = this.calcularDelay(thetas);
 		var controlAplicado = "Control"+control;
 		var motorUtilizado = "U9D-"+motor;
 		thetas.pop(); //siempre me sobra un valor!
@@ -164,21 +192,29 @@
 
 		for(var i = 0, theta; theta = thetas[i]; i++){
 
-			//var idealComparar = this.resultados.trayectorias.posicion.ideal[i];
-			var realComparar = this.resultados.trayectorias.posicion.real[i];
 			var resMatriz = this.scara.problemaDirecto(theta[0],theta[1]);
 			var x = resMatriz[0][3];
 			var y = resMatriz[1][3];
-			var nodoTray = this.nodoTrayectoria(x,y);
-			var xReal = math.abs(realComparar.x - x);
-			var yReal = math.abs(realComparar.y - y);
-			var nodoDistancia = this.nodoDistancia(xReal, yReal);
 
+			var nodoTray = this.nodoTrayectoria(x,y);
 			var nodoAngulo = this.nodoTheta(theta[0],theta[1]);
 			var nodoVelocidadAngular = this.nodoTheta(theta[2],theta[3]);
 			this.resultados.motores[pri][str].push(nodoAngulo);
 			this.resultados.motores[sec][str].push(nodoVelocidadAngular);
 			this.resultados.trayectorias.posicion[str].push(nodoTray);
+		}
+
+		for(var i = delay, theta; theta = thetas[i]; i++){
+
+			var resMatriz = this.scara.problemaDirecto(theta[0],theta[1]);
+			var x = resMatriz[0][3];
+			var y = resMatriz[1][3];
+
+			var realComparar = this.resultados.trayectorias.posicion.real[i-delay];
+			var xReal = math.abs(realComparar.x - x);
+			var yReal = math.abs(realComparar.y - y);
+
+			var nodoDistancia = this.nodoDistancia(xReal, yReal);
 			this.resultados.distanciaTrayectorias[str].push(nodoDistancia);
 		}
 
