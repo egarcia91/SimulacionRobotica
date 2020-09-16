@@ -24,37 +24,6 @@
 			[this.eslabon2.largo, 0, 0, 0]
 		];
 
-		this.carga = {
-			masa : 1, //[Kg]
-			Iglzz : 0 //[Kg m^2] origen terna 2
-		};
-
-		this.motor1 = {
-			masa : 1.7, //[Kg]
-			radio : 0.111/2, //[m]
-		};
-		this.motor1.Igmzz = (this.motor1.masa/2)*(this.motor1.radio)*(this.motor1.radio); //[Kg m^2] origen terna 2
-
-		this.motor2 = {
-			masa : 1.7, //[Kg]
-			radio : 0.111/2, //[m]
-		};
-		this.motor2.Igmzz = (this.motor2.masa/2)*(this.motor2.radio)*(this.motor2.radio); //[Kg m^2] origen terna 2
-
-		this.eslabon1ConCarga = {
-			Izz : (this.eslabon1.Iglzz+this.eslabon1.masa*(this.eslabon1.Xgl*this.eslabon1.Xgl+this.eslabon1.Ygl*this.eslabon1.Ygl))+(this.motor2.Igmzz),
-			Xgl : ((this.eslabon1.Xgl*this.eslabon1.masa) + (0*this.motor2.masa))/(this.eslabon1.masa+this.motor2.masa),
-			Ygl : ((this.eslabon1.Ygl*this.eslabon1.masa) + (0*this.motor2.masa))/(this.eslabon1.masa+this.motor2.masa),
-			masa : (this.eslabon1.masa + this.motor2.masa)
-		};
-
-		this.eslabon2ConCarga = {
-			Izz : (this.eslabon2.Iglzz+this.eslabon2.masa*(this.eslabon2.Xgl*this.eslabon2.Xgl+this.eslabon1.Ygl*this.eslabon1.Ygl)),
-			Xgl : ((this.eslabon2.Xgl*this.eslabon2.masa) + (0*this.carga.masa))/(this.eslabon2.masa+this.carga.masa),
-			Ygl : ((this.eslabon2.Ygl*this.eslabon2.masa) + (0*this.carga.masa))/(this.eslabon2.masa+this.carga.masa),
-			masa : (this.eslabon2.masa + this.carga.masa)
-		};
-
 		this.motorU9D_A = {
 			Jm : 3.95e-5, //Nm2, parametro Jm Moment of Inertia
 			Bm : (0.6*3)/((math.pi)*1e3), // Nm/(rad/s), parametro Kd Viscous Damping Constant
@@ -118,6 +87,38 @@
 	}
 
 	Scara.prototype.constructor = "Scara";
+
+	Scara.prototype.ponerCarga = function(carga){
+		this.carga = {
+			masa : carga, //[Kg]
+			Iglzz : 0 //[Kg m^2] origen terna 2
+		};
+
+		this.motor1 = {
+			masa : 1.7, //[Kg]
+			radio : 0.111/2, //[m]
+		};
+		this.motor1.Igmzz = (this.motor1.masa/2)*(this.motor1.radio)*(this.motor1.radio); //[Kg m^2] origen terna 2
+		this.motor2 = {
+			masa : 1.7, //[Kg]
+			radio : 0.111/2, //[m]
+		};
+		this.motor2.Igmzz = (this.motor2.masa/2)*(this.motor2.radio)*(this.motor2.radio); //[Kg m^2] origen terna 2
+		this.eslabon1ConCarga = {
+			Izz : (this.eslabon1.Iglzz+this.eslabon1.masa*(this.eslabon1.Xgl*this.eslabon1.Xgl+this.eslabon1.Ygl*this.eslabon1.Ygl))+(this.motor2.Igmzz),
+			Xgl : ((this.eslabon1.Xgl*this.eslabon1.masa) + (0*this.motor2.masa))/(this.eslabon1.masa+this.motor2.masa),
+			Ygl : ((this.eslabon1.Ygl*this.eslabon1.masa) + (0*this.motor2.masa))/(this.eslabon1.masa+this.motor2.masa),
+			masa : (this.eslabon1.masa + this.motor2.masa)
+		};
+
+		this.eslabon2ConCarga = {
+			Izz : (this.eslabon2.Iglzz+this.eslabon2.masa*(this.eslabon2.Xgl*this.eslabon2.Xgl+this.eslabon1.Ygl*this.eslabon1.Ygl)),
+			Xgl : ((this.eslabon2.Xgl*this.eslabon2.masa) + (0*this.carga.masa))/(this.eslabon2.masa+this.carga.masa),
+			Ygl : ((this.eslabon2.Ygl*this.eslabon2.masa) + (0*this.carga.masa))/(this.eslabon2.masa+this.carga.masa),
+			masa : (this.eslabon2.masa + this.carga.masa)
+		};
+
+	};
 
 	Scara.prototype.constantesControl = function(motor){
 

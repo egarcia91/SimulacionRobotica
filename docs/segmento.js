@@ -26,7 +26,7 @@
 				break;
 
 			case "agregar":
-				this.agregar(t);
+				this.agregar();
 				return true;
 				break;
 

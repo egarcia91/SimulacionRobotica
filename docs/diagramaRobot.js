@@ -36,7 +36,6 @@
 	];
 
 	DiagramaRobot.prototype.resultados = {
-		calculado : false,
 		trayectorias : {
 			posicion : {
 				real : []
@@ -127,10 +126,6 @@
 
 	DiagramaRobot.prototype.parseoTrayectoria = function(resultado){
 
-		if(this.resultados.calculado){
-			return;
-		}
-
 		var tiempo = [];
 		for(var h = 0, trayectoria; trayectoria = this.tipoTrayectorias[h]; h++){
 			for(var j = 0, tipo; tipo = this.tipos[j]; j++){
@@ -149,18 +144,17 @@
 			}
 		}
 
-		this.resultados.calculado = true;
 		this.resultados.tiempo = tiempo;
 
 	};
 
-	DiagramaRobot.prototype.ordernarThetas = function(thetas, control, motor){
+	DiagramaRobot.prototype.ordernarThetas = function(thetas, control, motor, carga){
 		var controlAplicado = "Control"+control;
 		var motorUtilizado = "U9D-"+motor;
 		thetas.pop(); //siempre me sobra un valor!
 		var pri = this.motorTrayectorias[0];
 		var sec = this.motorTrayectorias[1];
-		var str = controlAplicado+"--"+motorUtilizado;
+		var str = controlAplicado+"-"+carga+"-"+motorUtilizado;
 
 		this.resultados.motores[pri][str] = [];
 		this.resultados.motores[sec][str] = [];
@@ -190,14 +184,16 @@
 
 	};
 
-	DiagramaRobot.prototype.ordernarFuerzas = function(fuerzas, control, motor){
+	DiagramaRobot.prototype.ordernarFuerzas = function(fuerzas, control, motor, carga){
 		var controlAplicado = "Control"+control;
 		var motorUtilizado = "U9D-"+motor;
-		this.resultados.fuerzas[controlAplicado+"--"+motorUtilizado] = JSON.parse(JSON.stringify(fuerzas));
+		this.resultados.fuerzas[controlAplicado+"-"+carga+"-"+motorUtilizado] = JSON.parse(JSON.stringify(fuerzas));
 	};
 
 	DiagramaRobot.prototype.prepararAnimacion = function(data, thetas){
 		this.resultados.animacion.tiempoMuestreo = data.tiempoMuestreo;
+		this.resultados.animacion.theta1 = [];
+		this.resultados.animacion.theta2 = [];
 
 		for(var i = 0, theta; theta = thetas[i]; i++){
 			this.resultados.animacion.theta1.push(theta[0]);
@@ -224,6 +220,7 @@
 		var informacionInicio = this.generadorTrayectoria.separacionVariables(data);
 		var tiempoTotal = informacionInicio.tiempoTotal;
 		this.control = this["control"+data.control];
+		this.scara.ponerCarga(data.carga);
 		var constantesControl = this.scara.constantesControl(data.motor);
 
 		var cantidad = parseInt(tiempoTotal/data.tiempoMuestreo,10)+1;
@@ -330,8 +327,8 @@
 		}
 
 		this.parseoTrayectoria(resultado);
-		this.ordernarFuerzas(fuerzas, data.control, data.motor);
-		this.ordernarThetas(thetas, data.control, data.motor);
+		this.ordernarFuerzas(fuerzas, data.control, data.motor, data.carga);
+		this.ordernarThetas(thetas, data.control, data.motor, data.carga);
 		this.prepararAnimacion(data, thetas);
 
 	};
