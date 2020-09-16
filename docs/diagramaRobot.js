@@ -220,10 +220,14 @@
 
 	};
 
-	DiagramaRobot.prototype.ordernarFuerzas = function(fuerzas, control, motor, carga){
+	DiagramaRobot.prototype.ordernarFuerzas = function(fuerzas, control, motor, carga, km, n){
 		var controlAplicado = "Control"+control;
 		var motorUtilizado = "U9D-"+motor;
 		this.resultados.fuerzas[controlAplicado+"-"+carga+"-"+motorUtilizado] = JSON.parse(JSON.stringify(fuerzas));
+		for(var i = 0, fuerza; fuerza = this.resultados.fuerzas[controlAplicado+"-"+carga+"-"+motorUtilizado][i]; i++){
+			fuerza.u1*=(km*n);
+			fuerza.u2*=(km*n);
+		}
 	};
 
 	DiagramaRobot.prototype.prepararAnimacion = function(data, thetas){
@@ -363,7 +367,7 @@
 		}
 
 		this.parseoTrayectoria(resultado);
-		this.ordernarFuerzas(fuerzas, data.control, data.motor, data.carga);
+		this.ordernarFuerzas(fuerzas, data.control, data.motor, data.carga, constantesControl.km, constantesControl.n);
 		this.ordernarThetas(thetas, data.control, data.motor, data.carga);
 		this.prepararAnimacion(data, thetas);
 
