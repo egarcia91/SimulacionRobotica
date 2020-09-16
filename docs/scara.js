@@ -31,15 +31,15 @@
 
 		this.motor1 = {
 			masa : 1.7, //[Kg]
-			radio : 0.111/2, //[mm]
+			radio : 0.111/2, //[m]
 		};
-		this.motor1.Igmzz = (this.motor1.masa/2)*(this.motor1.radio/1000)*(this.motor1.radio/1000); //[Kg m^2] origen terna 2
+		this.motor1.Igmzz = (this.motor1.masa/2)*(this.motor1.radio)*(this.motor1.radio); //[Kg m^2] origen terna 2
 
 		this.motor2 = {
 			masa : 1.7, //[Kg]
 			radio : 0.111/2, //[m]
 		};
-		this.motor2.Igmzz = (this.motor2.masa/2)*(this.motor2.radio/1000)*(this.motor2.radio/1000); //[Kg m^2] origen terna 2
+		this.motor2.Igmzz = (this.motor2.masa/2)*(this.motor2.radio)*(this.motor2.radio); //[Kg m^2] origen terna 2
 
 		this.eslabon1ConCarga = {
 			Izz : (this.eslabon1.Iglzz+this.eslabon1.masa*(this.eslabon1.Xgl*this.eslabon1.Xgl+this.eslabon1.Ygl*this.eslabon1.Ygl))+(this.motor2.Igmzz),
@@ -121,8 +121,8 @@
 
 	Scara.prototype.constantesControl = function(motor){
 
-		var a1 = this.eslabon1.largo; //[mm]
-		var a2 = this.eslabon2.largo; //[mm]
+		var a1 = this.eslabon1.largo; //[m]
+		var a2 = this.eslabon2.largo; //[m]
 		var i1zz = this.eslabon1ConCarga.Izz;
 		var m1 = this.eslabon1ConCarga.masa;
 		var xg1 = this.eslabon1ConCarga.Xgl;
@@ -200,8 +200,8 @@
 		var theta1 = undefined;
 		var theta2 = undefined;
 
-		var a1 = this.eslabon1.largo; //[mm]
-		var a2 = this.eslabon2.largo; //[mm]
+		var a1 = this.eslabon1.largo; //[m]
+		var a2 = this.eslabon2.largo; //[m]
 
 //		//A x = b
 
@@ -286,8 +286,8 @@
 
 	Scara.prototype.problemaDirecto = function(t1, t2){
 
-		var a1 = this.eslabon1.largo; //[mm]
-		var a2 = this.eslabon2.largo; //[mm]
+		var a1 = this.eslabon1.largo; //[m]
+		var a2 = this.eslabon2.largo; //[m]
 
 		var rotoTraslacion = [
 			[ math.cos(t1+t2),    -math.sin(t1+t2),    0,  a1*math.cos(t1) + a2*math.cos(t1+t2) ],
