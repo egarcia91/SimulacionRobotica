@@ -133,7 +133,6 @@
 				for(var i = 0, xi, yi; ((xi = resultado['X'][tipo][i]) != undefined) && ((yi = resultado['Y'][tipo][i]) != undefined); i++){
 					this.resultados.trayectorias[trayectoria][tipo.toLowerCase()].push(this.nodoTrayectoria(xi[trayectoria],yi[trayectoria]));
 					tiempo.push(xi.tiempo);
-
 				}
 			}
 
@@ -175,7 +174,7 @@
 		return delay;
 	};
 
-	DiagramaRobot.prototype.ordernarThetas = function(thetas, control, motor, carga){
+	DiagramaRobot.prototype.ordernarThetas = function(thetas, control, motor, carga, tiempoMuestreo){
 		var delay = this.calcularDelay(thetas);
 		var controlAplicado = "Control"+control;
 		var motorUtilizado = "U9D-"+motor;
@@ -187,21 +186,41 @@
 		this.resultados.motores[pri][str] = [];
 		this.resultados.motores[sec][str] = [];
 		this.resultados.trayectorias.posicion[str] = [];
-		this.resultados.trayectorias.posicion[str] = [];
+		this.resultados.trayectorias.velocidad[str] = [];
+		this.resultados.trayectorias.aceleracion[str] = [];
 		this.resultados.distanciaTrayectorias[str] = [];
+
+		var xAnt = undefined;
+		var yAnt = undefined;
+		var xpAnt = undefined;
+		var ypAnt = undefined;
 
 		for(var i = 0, theta; theta = thetas[i]; i++){
 
 			var resMatriz = this.scara.problemaDirecto(theta[0],theta[1]);
 			var x = resMatriz[0][3];
 			var y = resMatriz[1][3];
+			var xp = (x - xAnt)/tiempoMuestreo || 0;
+			var yp = (y - yAnt)/tiempoMuestreo || 0;
+			var xpp = (xp - xpAnt)/tiempoMuestreo || 0;
+			var ypp = (yp - ypAnt)/tiempoMuestreo || 0;
 
 			var nodoTray = this.nodoTrayectoria(x,y);
+			var nodoTrayP = this.nodoTrayectoria(xp,yp);
+			var nodoTrayPP = this.nodoTrayectoria(xpp,ypp);
 			var nodoAngulo = this.nodoTheta(theta[0],theta[1]);
 			var nodoVelocidadAngular = this.nodoTheta(theta[2],theta[3]);
 			this.resultados.motores[pri][str].push(nodoAngulo);
 			this.resultados.motores[sec][str].push(nodoVelocidadAngular);
 			this.resultados.trayectorias.posicion[str].push(nodoTray);
+			this.resultados.trayectorias.velocidad[str].push(nodoTrayP);
+			this.resultados.trayectorias.aceleracion[str].push(nodoTrayPP);
+
+			xpAnt = xp;
+			ypAnt = yp;
+			xAnt = x;
+			yAnt = y;
+
 		}
 
 		for(var i = delay, theta; theta = thetas[i]; i++){
@@ -315,6 +334,7 @@
 			var tSeg = x.t;
 			var resultadosX = this.generadorTrayectoria[data.movimiento](xAnterior, x.posIni, x.posFin, tSeg, tiempo - corrimientoTiempo); //Posion, vel, Acel deseados. MOVEL
 			var resultadosY = this.generadorTrayectoria[data.movimiento](yAnterior, y.posIni, y.posFin, tSeg, tiempo - corrimientoTiempo); //Posion, vel, Acel deseados. MOVEL
+
 			if(resultadosX['deseado'] == undefined){
 				indiceSegmento++;
 				i--;
@@ -368,7 +388,7 @@
 
 		this.parseoTrayectoria(resultado);
 		this.ordernarFuerzas(fuerzas, data.control, data.motor, data.carga, constantesControl.km, constantesControl.n);
-		this.ordernarThetas(thetas, data.control, data.motor, data.carga);
+		this.ordernarThetas(thetas, data.control, data.motor, data.carga, data.tiempoMuestreo);
 		this.prepararAnimacion(data, thetas);
 
 	};
