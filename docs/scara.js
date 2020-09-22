@@ -159,8 +159,8 @@
 		};
 
 		var kd = {
-			1 : (math.sqrt(km*n*kp["1"]*jeff[0][0])/(km*n)) - bm*n*n,
-			2 : (math.sqrt(km*n*kp["2"]*jeff[1][1])/(km*n)) - bm*n*n
+			1 : (2*math.sqrt(km*n*kp["1"]*jeff[0][0]) - bm*n*n)/(km*n),
+			2 : (2*math.sqrt(km*n*kp["2"]*jeff[1][1]) - bm*n*n)/(km*n)
 		};
 
 		return {

@@ -1,8 +1,6 @@
 (function(){
 	function GeneradorTrayectoria(div,config){
 
-		this.scara = new Scara();
-
 		this.tiempoAceleracion = 0;
 	}
 
@@ -12,43 +10,6 @@
 		"X",
 		"Y"
 	];
-
-	GeneradorTrayectoria.prototype.motores = [
-		"1",
-		"2"
-	];
-
-	GeneradorTrayectoria.prototype.calculoDerivada = function(lista, tiempoMuestreo){
-		var derivada = [0];
-
-		for(var i = 1, elemento, elementoAnterior; ((elemento = lista[i]) != undefined) && ((elementoAnterior = lista[i-1]) != undefined); i++){
-			derivada.push((elemento - elementoAnterior)/tiempoMuestreo)
-		}
-
-		return derivada;
-	};
-
-	GeneradorTrayectoria.prototype.calculoAnguloMotores = function(){
-		var posicionesX = this.trayectoria["X"]["Real"];
-		var posicionesY = this.trayectoria["Y"]["Real"];
-
-		var listaTheta1 = [];
-		var listaTheta2 = [];
-
-		for(var i = 0, posicionX, posicionY; (posicionX = posicionesX[i]) != undefined && (posicionY = posicionesY[i]) != undefined; i++){
-
-			var res = this.scara.problemaInverso(posicionX.posicion, posicionY.posicion, 0, -1);
-
-			listaTheta1.push(res.theta1);
-			listaTheta2.push(res.theta2);
-
-		}
-
-		return {
-			listaTheta1 : listaTheta1,
-			listaTheta2 : listaTheta2
-		}
-	};
 
 	GeneradorTrayectoria.prototype.separacionVariables = function(data){
 		this.tiempoAceleracion = data.tiempoAceleracion;

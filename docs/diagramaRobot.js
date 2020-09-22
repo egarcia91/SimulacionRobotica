@@ -174,14 +174,14 @@
 		return delay;
 	};
 
-	DiagramaRobot.prototype.ordernarThetas = function(thetas, control, motor, carga, tiempoMuestreo){
-		var delay = this.calcularDelay(thetas);
+	DiagramaRobot.prototype.ordernarThetas = function(thetas, control, motor, carga, tiempoMuestreo, delay){
 		var controlAplicado = "Control"+control;
+		var strDelay = (delay*tiempoMuestreo*1e3).toPrecision(2);
 		var motorUtilizado = "U9D-"+motor;
 		thetas.pop(); //siempre me sobra un valor!
 		var pri = this.motorTrayectorias[0];
 		var sec = this.motorTrayectorias[1];
-		var str = controlAplicado+"-"+carga+"-"+motorUtilizado;
+		var str = controlAplicado+"-"+carga+"--d"+strDelay+"--"+motorUtilizado;
 
 		this.resultados.motores[pri][str] = [];
 		this.resultados.motores[sec][str] = [];
@@ -239,11 +239,12 @@
 
 	};
 
-	DiagramaRobot.prototype.ordernarFuerzas = function(fuerzas, control, motor, carga, km, n){
+	DiagramaRobot.prototype.ordernarFuerzas = function(fuerzas, control, motor, carga, km, n, delay, tiempoMuestreo){
 		var controlAplicado = "Control"+control;
+		var strDelay = (delay*tiempoMuestreo*1e3).toPrecision(2);
 		var motorUtilizado = "U9D-"+motor;
-		this.resultados.fuerzas[controlAplicado+"-"+carga+"-"+motorUtilizado] = JSON.parse(JSON.stringify(fuerzas));
-		for(var i = 0, fuerza; fuerza = this.resultados.fuerzas[controlAplicado+"-"+carga+"-"+motorUtilizado][i]; i++){
+		this.resultados.fuerzas[controlAplicado+"-"+carga+"--d"+strDelay+"--"+motorUtilizado] = JSON.parse(JSON.stringify(fuerzas));
+		for(var i = 0, fuerza; fuerza = this.resultados.fuerzas[controlAplicado+"-"+carga+"--d"+strDelay+"--"+motorUtilizado][i]; i++){
 			fuerza.u1*=(km*n);
 			fuerza.u2*=(km*n);
 		}
@@ -387,8 +388,9 @@
 		}
 
 		this.parseoTrayectoria(resultado);
-		this.ordernarFuerzas(fuerzas, data.control, data.motor, data.carga, constantesControl.km, constantesControl.n);
-		this.ordernarThetas(thetas, data.control, data.motor, data.carga, data.tiempoMuestreo);
+		var delay = this.calcularDelay(thetas);
+		this.ordernarFuerzas(fuerzas, data.control, data.motor, data.carga, constantesControl.km, constantesControl.n, delay, data.tiempoMuestreo);
+		this.ordernarThetas(thetas, data.control, data.motor, data.carga, data.tiempoMuestreo, delay);
 		this.prepararAnimacion(data, thetas);
 
 	};

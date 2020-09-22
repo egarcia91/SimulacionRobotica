@@ -128,7 +128,13 @@
 				case 'trayectorias':
 					for(var j = 0, nKey; nKey = Object.keys(data[key])[j]; j++){
 						if(nKey == funcion){
-							this.configPlot.options.scales.yAxes[0].scaleLabel.labelString = nKey+" "+param+" [mm]";
+							var strAdd = "";
+							if(funcion == "velocidad"){
+								strAdd = "/s";
+							} else if(funcion == "aceleracion"){
+								strAdd = "/s2";
+							}
+							this.configPlot.options.scales.yAxes[0].scaleLabel.labelString = nKey+" "+param+" [mm"+strAdd+"]";
 							for(var k = 0, nnKey; nnKey = Object.keys(data[key][nKey])[k]; k++){
 								var datoAgregar = this.datosDinamico(nnKey);
 								for(var h = 0, pos; pos = data[key][nKey][nnKey][h]; h++){
@@ -158,7 +164,7 @@
 					break;
 
 				case 'fuerzas':
-					this.configPlot.options.scales.yAxes[0].scaleLabel.labelString = 'torque '+param+' [N]';
+					this.configPlot.options.scales.yAxes[0].scaleLabel.labelString = 'torque '+param+' [Nm]';
 					for(var j = 0, nKey; nKey = Object.keys(data[key])[j]; j++){
 						var datoAgregar = this.datosDinamico(nKey);
 						for(var h = 0, pos; pos = data[key][nKey][h]; h++){
