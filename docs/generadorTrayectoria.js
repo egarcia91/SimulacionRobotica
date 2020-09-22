@@ -37,7 +37,7 @@
 
 			}
 
-			var tiempoSegmento = math.max(tiempos.X, tiempos.Y, data.tiempoAceleracion, ele.tiempoDeseado);
+			var tiempoSegmento = math.max(tiempos.X, tiempos.Y, 2*data.tiempoAceleracion, ele.tiempoDeseado);
 			tiempoTotal += tiempoSegmento;
 
 			for(var j = 0, ejeCartesiano; ejeCartesiano = this.ejesCartesianos[j]; j++){
