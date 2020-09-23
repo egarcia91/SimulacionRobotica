@@ -161,15 +161,15 @@
 		var xTercuarto = this.scara.problemaDirecto(thetas[tercuarto][0],thetas[tercuarto][1])[0][3];
 
 		var delay = 0;
-		for(var i = 0; i < (cuarto-1); i++){
-			var distCuarto = math.abs(this.resultados.trayectorias.posicion.real[cuarto-i].x -xCuarto);
-			var distMedio = math.abs(this.resultados.trayectorias.posicion.real[medio-i].x - xMedio);
-			var distTercuarto = math.abs(this.resultados.trayectorias.posicion.real[tercuarto-i].x - xTercuarto);
-			if( distCuarto < tolerance && distMedio < tolerance && distTercuarto < tolerance){
-				delay = i;
-				break;
-			}
-		}
+//		for(var i = 0; i < (cuarto-1); i++){
+//			var distCuarto = math.abs(this.resultados.trayectorias.posicion.real[cuarto-i].x -xCuarto);
+//			var distMedio = math.abs(this.resultados.trayectorias.posicion.real[medio-i].x - xMedio);
+//			var distTercuarto = math.abs(this.resultados.trayectorias.posicion.real[tercuarto-i].x - xTercuarto);
+//			if( distCuarto < tolerance && distMedio < tolerance && distTercuarto < tolerance){
+//				delay = i;
+//				break;
+//			}
+//		}
 
 		return delay;
 	};

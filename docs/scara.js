@@ -163,6 +163,11 @@
 			2 : (2*math.sqrt(km*n*kp["2"]*jeff[1][1]) - bm*n*n)/(km*n)
 		};
 
+//		console.log("esto es Kp motor1 : "+ kp['1']);
+//		console.log("esto es Kp motor2 : "+ kp['2']);
+//		console.log("esto es Kd motor1 : "+ kd['1']);
+//		console.log("esto es Kd motor2 : "+ kd['2']);
+//		console.log("esto es Km : "+ km);
 		return {
 			kd : kd,
 			kp : kp,
@@ -314,6 +319,7 @@
 
 		var torque1 = km*n*u1;
 		var torque2 = km*n*u2;
+		//console.log(torque1);
 
 		var nejes = this.cantidadEjes;
 
